@@ -1,0 +1,68 @@
+---
+- name: Instance register/De-register
+  hosts: "{{ hosts }}"
+  gather_facts: True
+  vars:
+      Date: "{{ansible_date_time.date}}"
+      Hour: "{{ansible_date_time.hour}}"
+      Minute: "{{ansible_date_time.minute}}"
+      AMI_name: "{{instance_name}}-{{env}}-v{{version}}-{{Date}}-{{Hour}}-{{Minute}}"
+      LC_name: "LC-{{instance_name}}-{{env}}-{{version}}-{{Date}}"
+      Image_ID: "{{imageId.stdout}}"
+
+
+  pre_tasks:
+      - name: Gathering ec2 facts
+        action: ec2_metadata_facts
+        tags:
+           - always
+
+  tasks:
+    - name: AMI creation
+      include: ec2_ami_creation.yml
+      tags:
+         - create_ami
+
+    - name: retrive image_id from image_name
+      connection: local
+      command: aws ec2 describe-images --filters Name=name,Values={{AMI_name}} --query Images[].ImageId --output text
+      register: imageId
+
+    - name:
+      debug:
+        msg: "{{Image_ID}}"
+
+    - name: Create Luanch configuration
+      include: asg_launch_pwdconfiguration.yml
+      tags:
+         - Create_launch_configuration
+
+    - name: Describe ASG
+      connection: local
+      command: aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names {{ASG_name}}
+      tags:
+         - update_asg
+
+    - name: Update Auto-scalling group
+      include: updata_asg.yml
+      tags:
+         - update_asg
+
+
+    - name: Describe ASG
+      connection: local
+      command: aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names {{ASG_name}}
+      tags:
+         - update_asg
+
+
+
+
+# To run it for all ( create AMI, launch configurtion, and update ASG )
+# ansible-playbook -i inventories/inven ami_lc_asg.yml -e "hosts={{hosts}} , instance_name=FE01 , env=stag , version=justTest , ASG_name=STAG-FE-ASG" -vvv
+
+
+# To create AMI only
+# ansible-playbook -i inventories/inven ami_lc_asg.yml -e "hosts={{hosts}} , instance_name=FE01 , env=stag , version=justTest" --tags "create_ami" -vvv
+
+

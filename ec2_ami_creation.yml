@@ -1,0 +1,34 @@
+---
+- name: Create AMI
+#  hosts: "{{ hosts }}"
+#  gather_facts: True
+  connection: local
+  ec2_ami:
+       instance_id: "{{ ansible_ec2_instance_id }}"
+       region: '{{ aws_region }}'
+       wait: yes
+       name: "{{ AMI_name }}"
+#          tags:
+#            Name: newtest
+#            Service: TestService
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#    - name: install python botocore
+#      pip:
+#        name: boto3
+#    - name: Gathering ec2 facts
+#      action: ec2_facts

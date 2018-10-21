@@ -1,0 +1,15 @@
+---
+- name: Update Auto-scaling group
+#  hosts: "{{ hosts }}"
+#  gather_facts: True
+  connection: local
+  ec2_asg:
+      name: "{{ASG_name}}"
+      launch_config_name:  "{{LC_name}}"
+      region: '{{ aws_region }}'
+#      health_check_period: 60
+#      health_check_type: EC2
+#      replace_all_instances: yes
+#      min_size: 1
+#      max_size: 2
+#      desired_capacity: 1

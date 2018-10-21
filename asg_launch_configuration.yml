@@ -1,0 +1,13 @@
+---
+- name: Create Luanch configuration
+#  hosts: "{{ hosts }}"
+  connection: local
+  ec2_lc:
+      name: "{{LC_name}}"
+      region: '{{ aws_region }}'
+#      image_id: "{{Image_ID}}"
+      instance_id : "{{ansible_ec2_instance_id}}"
+      key_name: bz_release_server #"{{ ansible_ec2_public_key }}"
+      security_groups: "{{ ansible_ec2_security_groups }}"
+      instance_type: "{{ ansible_ec2_instance_type }}"
+      instance_monitoring: no
