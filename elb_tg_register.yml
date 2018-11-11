@@ -1,0 +1,25 @@
+---
+- name: Instance register/De-register
+  hosts: "{{ hosts }}"
+  gather_facts: False
+#  connection: local
+
+  pre_tasks:
+    - name: Gathering ec2 facts
+      action: ec2_metadata_facts
+
+  roles:
+      -  { role: elb_registration }
+      -  { role: target_group_registration }
+
+
+
+
+
+
+
+
+
+
+
+# ansible-playbook -i inventories/vpc-staging.hosts elb_tg_register.yml -e "hosts=fe002.pre-www.mybaaz.net , user=suleiman , state=present/absent , env_target_group=staging_target_group , env_elb=staging_elb"

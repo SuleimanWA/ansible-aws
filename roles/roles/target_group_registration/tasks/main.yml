@@ -1,0 +1,9 @@
+---
+- name: add/remove from target group
+  connection: local
+  elb_target:
+      target_group_name: "{{ item }}"
+      region: '{{ aws_region }}'
+      target_id: "{{ ansible_ec2_instance_id }}"
+      state: "{{ state }}"
+  with_items: "{{ lookup('vars', env_target_group)}}"
