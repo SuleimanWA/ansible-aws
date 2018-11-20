@@ -1,7 +1,0 @@
----
-- name: Deploy nodejs docker
-  hosts: "{{ hosts }}"
-
-  roles:
-    - deploy
-    - validate
