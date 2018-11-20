@@ -1,0 +1,10 @@
+---
+- name:  Instance register/De-register
+  connection: local
+  local_action:
+        module: ec2_elb
+        region: '{{ aws_region }}'
+        ec2_elbs: "{{ item }}"
+        instance_id: "{{ ansible_ec2_instance_id }}"
+        state: "{{ state }}"
+  with_items: "{{ lookup('vars', env_elb)}}"
